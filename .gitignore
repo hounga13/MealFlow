@@ -1,0 +1,5 @@
+node_modules/
+screenshots/
+test_logs.txt
+test_app.js
+.DS_Store
