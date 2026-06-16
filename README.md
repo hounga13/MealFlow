@@ -1,59 +1,79 @@
-# 🥑 MealFlow - 프리미엄 주간 식단 플래너 & 영양 분석기
+# 🥑 MealFlow
 
-MealFlow는 사용자가 주간 식단을 체계적으로 계획하고, 영양소 비율을 실시간으로 추적하며, 식자재 쇼핑 리스트를 자동으로 작성할 수 있는 프리미엄 싱글 페이지 웹 애플리케이션(SPA)입니다.
+> **프리미엄 주간 식단 플래너 & 실시간 영양 분석 웹 애플리케이션**
+> 
+> 다운로드 없이 브라우저에서 바로 주간 식단을 수립하고, 목표 식습관에 따른 탄단지 섭취 현황을 트래킹하며, 식단에서 식재료만 자동으로 추출해 장보기 리스트를 관리해 보세요.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-1.1.0-emerald?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/Platform-Web%20%2F%20SPA-cyan?style=for-the-badge" alt="Platform">
+  <img src="https://img.shields.io/badge/Build-GitHub%20Actions-darkgreen?style=for-the-badge" alt="Build">
+</p>
 
 ---
 
-## ✨ 핵심 기능
+## 🔗 Live Demo
+👉 **[MealFlow 라이브 사이트 바로가기 (Click)](https://hounga13.github.io/MealFlow/)**
 
-1. **글래스모피즘(Glassmorphism) 기반 다크 테마**: 세련되고 프리미엄한 감각의 반응형 UI 대시보드.
-2. **5대 식습관 모드 지원**:
-   - **일반 균형식** (탄수화물 50% / 단백질 20% / 지방 30%)
-   - **다이어트** (탄수화물 40% / 단백질 40% / 지방 20%)
-   - **고단백 벌크업** (탄수화물 55% / 단백질 25% / 지방 20%)
-   - **키토제닉 (저탄고지)** (탄수화물 5% / 단백질 25% / 지방 70%)
-   - **식물성 비건** (탄수화물 60% / 단백질 20% / 지방 20%)
-3. **스마트 식재료 자동 합산 파서**: 식단 내에 등록된 중복 재료(예: `닭가슴살 120g`과 `닭가슴살 150g`)를 자동으로 파싱하고 단위를 판별해 `닭가슴살 270g`으로 합산 취합하여 쇼핑 리스트에 렌더링.
-4. **로컬 데이터 백업 및 복원**: 브라우저 로컬 저장소를 활용해 데이터를 유지하며, 백업 다운로드 및 복원(JSON 형식) 기능을 통해 안전하게 관리 가능.
-5. **A4 최적화 주간 식단표 인쇄**: '식단표 인쇄' 선택 시 화면의 복잡한 버튼과 네비게이션을 생략하고 깨끗한 식단 그리드 카드만 A4 용지에 맞춰 출력.
+*(※ 최초 배포 시 GitHub Repository Settings -> Pages에서 Source를 'GitHub Actions'로 선택해야 라이브 링크가 정상 동작합니다.)*
+
+---
+
+## ✨ 핵심 기능 (Key Features)
+
+### 1. 5대 식습관 테마별 목표 영양소 자동 계산
+- **일반 균형식** (탄50% : 단20% : 지30%)
+- **다이어트** (탄40% : 단40% : 지20%)
+- **고단백 벌크업** (탄55% : 단25% : 지20%)
+- **키토제닉 (저탄고지)** (탄5% : 단25% : 지70%)
+- **식물성 비건** (탄60% : 단20% : 지20%)
+- 목표 칼로리 변경 시 권장 영양소(g) 자동 계산 및 주간 평균 섭취량 대비 프로그레스 바 제공.
+
+### 2. 스마트 식재료 합산 쇼핑 리스트
+- 요일별 식단에 적힌 식재료 텍스트(예: `닭가슴살 120g`, `닭가슴살 150g`, `계란 2개`)를 자동으로 파싱.
+- 단위를 판별하여 동일 재료를 하나의 합계(`닭가슴살 270g`, `계란 2개`)로 자동 병합하여 장보기 리스트 제공.
+
+### 3. 무손실 로컬 백업 & 복원 (Data Portability)
+- 브라우저 쿠키나 로컬 저장소 유실에 대비해 현재 세팅을 한 번에 JSON 파일로 다운로드 백업 가능.
+- 백업 파일을 로드해 무결성 검증을 거친 뒤 원클릭 복원 지원.
+
+### 4. A4 캘린더 규격 식단표 인쇄
+- 냉장고나 식탁에 붙여놓고 볼 수 있도록 프린트 전용 CSS 스타일 적용.
+- 불필요한 사이드바와 설정 요소를 생략하고 깔끔한 7일 식단 카드 캘린더만 A4 규격에 맞추어 출력.
+
+---
+
+## 🛠️ 기술 스택 (Tech Stack)
+
+<p align="left">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black"/>
+  <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white"/>
+</p>
+
+- **Core**: Vanilla HTML5, JavaScript (ES6+), Vanilla CSS (Glassmorphism Concept)
+- **Icons**: Lucide Icons CDN
+- **Typography**: Google Fonts (Outfit, Inter)
 
 ---
 
 ## 🚀 로컬 실행 방법 (How to Run)
 
-웹서버 환경에서 실행해야 정상적으로 외부 CDN 리소스가 동작하고 로컬 스토리지 보안 정책이 원활하게 유지됩니다.
-
-### 방법 1. Node.js 패키지 실행 (추천)
 ```bash
-# 의존성 패키지 설치
-npm install
+# 1. 저장소 클론
+git clone https://github.com/hounga13/MealFlow.git
+cd MealFlow
 
-# 로컬 개발 서버 구동 (포트 3000)
+# 2. 로컬 개발 서버 구동 (포트 3000)
+npm install
 npm start
 ```
-서버 실행 후 브라우저에서 `http://localhost:3000`으로 접속합니다.
-
-### 방법 2. Python 기본 서버 실행 (Node가 없을 때)
-```bash
-python3 -m http.server 3000
-```
-서버 실행 후 브라우저에서 `http://localhost:3000`으로 접속합니다.
+브라우저에서 `http://localhost:3000`으로 접속합니다. (Node.js 미설치 시 `python3 -m http.server 3000`으로 구동 가능)
 
 ---
 
-## 🚢 배포 가이드 (Deployment)
+## 🚢 배포 및 인프라 운영 (CI/CD)
 
-### 1. GitHub Pages를 이용한 자동 배포
-본 프로젝트에는 `.github/workflows/deploy.yml` 파일이 포함되어 있습니다.
-- 이 소스 코드를 본인의 GitHub 리포지토리(`main` 또는 `master` 브랜치)에 푸시하기만 하면 GitHub Actions가 트리거되어 자동으로 정적 페이지가 무료 배포됩니다.
-- 리포지토리 설정(`Settings -> Pages`)에서 소스가 `GitHub Actions`로 잡혀 있는지 확인하세요.
-
-### 2. Vercel / Netlify 배포
-- [Vercel](https://vercel.com/) 또는 [Netlify](https://www.netlify.com/)에 접속하여 본 프로젝트 폴더를 드래그 앤 드롭으로 업로드하기만 하면 즉시 라이브 배포가 완료됩니다.
-
----
-
-## 🛠️ 운영 및 기술 문서 (Operations)
-
-- **데이터 스토리지**: 사용자의 모든 데이터는 브라우저 내부 `localStorage`의 `mealflow_state` 키에 JSON 포맷으로 저장됩니다.
-- **예외 처리 & 정합성 자가진단**: `app.js`는 초기화 시 스토리지 파싱 유실을 감지하고, 비정상적 파일이나 구조 변형이 들어올 경우 자가진단을 통해 초기 목 데이터를 안정적으로 공급(Fallback)합니다.
+본 프로젝트는 `.github/workflows/deploy.yml` 파일이 기본 탑재되어 있어, GitHub 레포지토리에 푸시되는 즉시 GitHub Actions를 통해 무료 호스팅 배포가 자동 수행됩니다.
