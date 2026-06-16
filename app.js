@@ -1138,6 +1138,69 @@ function setupEventListeners() {
       showToast(`장보기 목록 필터: ${filterText} 보기`, 'info');
     });
   });
+
+  // 10. Calorie Calculator (TDEE) Actions
+  const btnOpenCalc = document.getElementById('btn-open-calc');
+  const calcModal = document.getElementById('calc-modal');
+  const btnCloseCalcModal = document.getElementById('btn-close-calc-modal');
+  const calcForm = document.getElementById('calc-form');
+
+  if (btnOpenCalc && calcModal) {
+    btnOpenCalc.addEventListener('click', () => {
+      calcModal.showModal();
+    });
+  }
+
+  if (btnCloseCalcModal && calcModal) {
+    btnCloseCalcModal.addEventListener('click', () => {
+      calcModal.close();
+    });
+  }
+
+  if (calcForm && calcModal) {
+    calcForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      try {
+        const gender = document.getElementById('calc-gender').value;
+        const age = parseFloat(document.getElementById('calc-age').value) || 25;
+        const height = parseFloat(document.getElementById('calc-height').value) || 175;
+        const weight = parseFloat(document.getElementById('calc-weight').value) || 70;
+        const activityFactor = parseFloat(document.getElementById('calc-activity').value) || 1.2;
+        const goalOffset = parseFloat(document.getElementById('calc-goal').value) || 0;
+
+        let bmr = 0;
+        if (gender === 'male') {
+          bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+        } else {
+          bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+        }
+
+        const tdee = bmr * activityFactor;
+        let recommendedCalories = Math.round(tdee + goalOffset);
+        
+        if (recommendedCalories < 800) recommendedCalories = 800;
+        if (recommendedCalories > 15000) recommendedCalories = 15000;
+
+        state.targetCalories = recommendedCalories;
+        saveToLocalStorage();
+        
+        const targetCalInput = document.getElementById('target-calories');
+        if (targetCalInput) {
+          targetCalInput.value = recommendedCalories;
+        }
+
+        calculateTargetMacros();
+        renderNutritionProgress();
+        renderPlanner(); 
+
+        showToast(`TDEE 계산 완료: 권장 칼로리 ${recommendedCalories} kcal가 적용되었습니다!`);
+        calcModal.close();
+      } catch (err) {
+        console.error('[MealFlow Calc] Calculation failed:', err);
+        showToast('계산 도중 에러가 발생했습니다.', 'danger');
+      }
+    });
+  }
 }
 
 // Open Dialog modal to add new meals

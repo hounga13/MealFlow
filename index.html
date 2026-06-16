@@ -83,6 +83,10 @@
           <div class="target-card card">
             <div class="card-header">
               <h2><i data-lucide="sliders"></i> 목표 설정</h2>
+              <button class="action-btn" id="btn-open-calc" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; background: rgba(255, 255, 255, 0.05); border-radius: 6px;" title="내 권장 칼로리 계산하기">
+                <i data-lucide="calculator" style="width: 14px; height: 14px; color: var(--color-primary);"></i>
+                <span>권장 칼로리 계산</span>
+              </button>
             </div>
             <div class="target-inputs">
               <div class="input-group">
@@ -109,7 +113,7 @@
 
           <div class="progress-card card">
             <div class="card-header">
-              <h2><i data-lucide="activity"></i> 주간 누적 영양 현황</h2>
+              <h2><i data-lucide="activity"></i> 일일 평균 영양 섭취 현황</h2>
             </div>
             <div class="progress-grid">
               <div class="progress-item">
@@ -415,6 +419,70 @@
           <button type="submit" class="action-btn-primary">
             <i data-lucide="check"></i>
             <span>레시피 추가</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- MODAL: CALORIE CALCULATOR DIALOG -->
+  <dialog class="modal-dialog" id="calc-modal">
+    <div class="modal-content" style="width: 450px;">
+      <div class="modal-header">
+        <h3>권장 칼로리 계산기 (TDEE)</h3>
+        <button class="modal-close" id="btn-close-calc-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="calc-form" method="dialog">
+        <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+          <div class="input-group">
+            <label for="calc-gender">성별</label>
+            <select id="calc-gender" style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--panel-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); color: var(--text-primary); width: 100%;">
+              <option value="male">남성</option>
+              <option value="female">여성</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="calc-age">나이 (세)</label>
+            <input type="number" id="calc-age" min="1" max="120" value="25" required style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--panel-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); color: var(--text-primary); width: 100%;">
+          </div>
+        </div>
+
+        <div class="input-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+          <div class="input-group">
+            <label for="calc-height">키 (cm)</label>
+            <input type="number" id="calc-height" min="50" max="250" value="175" required style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--panel-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); color: var(--text-primary); width: 100%;">
+          </div>
+          <div class="input-group">
+            <label for="calc-weight">체중 (kg)</label>
+            <input type="number" id="calc-weight" min="10" max="300" value="70" required style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--panel-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); color: var(--text-primary); width: 100%;">
+          </div>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 0.75rem;">
+          <label for="calc-activity">활동 수준</label>
+          <select id="calc-activity" style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--panel-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); color: var(--text-primary); width: 100%;">
+            <option value="1.2">거의 활동 안 함 (사무직, 운동 안 함)</option>
+            <option value="1.375">가벼운 활동 (주 1~3회 가벼운 운동)</option>
+            <option value="1.55">보통 활동 (주 3~5회 보통 운동)</option>
+            <option value="1.725">적극적 활동 (주 6~7회 힘든 운동)</option>
+            <option value="1.9">매우 적극적 활동 (매일 고강도 훈련/선수)</option>
+          </select>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 1.25rem;">
+          <label for="calc-goal">목표 설정</label>
+          <select id="calc-goal" style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--panel-border); padding: 0.75rem 1rem; border-radius: var(--radius-sm); color: var(--text-primary); width: 100%;">
+            <option value="0">체중 유지</option>
+            <option value="-300">건강한 다이어트 (-300 kcal)</option>
+            <option value="-500">급속 다이어트 (-500 kcal)</option>
+            <option value="300">린매스업 / 벌크업 (+300 kcal)</option>
+          </select>
+        </div>
+
+        <div class="modal-footer" style="margin-top: 1rem;">
+          <button type="submit" class="action-btn-primary" id="btn-apply-calc" style="width: 100%;">
+            <i data-lucide="check"></i>
+            <span>계산 결과 적용하기</span>
           </button>
         </div>
       </form>
