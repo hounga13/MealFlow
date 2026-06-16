@@ -168,7 +168,7 @@ const PRESET_RECIPES = [
 
 // --- App State ---
 let state = {
-  targetCalories: 2000,
+  targetCalories: 2500,
   dietType: 'balanced', // balanced, diet, bulk, keto, vegan
   meals: {
     mon: [],
@@ -214,7 +214,7 @@ function loadFromLocalStorage() {
     if (rawData) {
       const parsed = JSON.parse(rawData);
       // Defensive checks and structural migrations
-      state.targetCalories = Number(parsed.targetCalories) || 2000;
+      state.targetCalories = Number(parsed.targetCalories) || 2500;
       state.dietType = parsed.dietType || 'balanced';
       state.meals = parsed.meals || { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] };
       state.customRecipes = parsed.customRecipes || [];
@@ -235,7 +235,7 @@ function loadFromLocalStorage() {
 // Injects default data so the user isn't greeted by an empty screen
 function injectInitialMockData() {
   try {
-    state.targetCalories = 2000;
+    state.targetCalories = 2500;
     state.dietType = 'balanced';
     
     // Distribute a few preset recipes across the week
@@ -1019,7 +1019,7 @@ function setupEventListeners() {
       if (confirm('모든 데이터가 초기화되고 초기 예시 데이터로 대체됩니다. 진행하시겠습니까?')) {
         localStorage.removeItem('mealflow_state');
         state = {
-          targetCalories: 2000,
+          targetCalories: 2500,
           dietType: 'balanced',
           meals: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
           customRecipes: [],
@@ -1085,7 +1085,7 @@ function setupEventListeners() {
         try {
           const parsed = JSON.parse(event.target.result);
           if (parsed && typeof parsed === 'object' && parsed.meals && parsed.targetCalories) {
-            state.targetCalories = Number(parsed.targetCalories) || 2000;
+            state.targetCalories = Number(parsed.targetCalories) || 2500;
             state.dietType = parsed.dietType || 'balanced';
             state.meals = parsed.meals;
             state.customRecipes = parsed.customRecipes || [];
