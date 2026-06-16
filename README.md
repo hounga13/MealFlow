@@ -1,79 +1,95 @@
-# 🥑 MealFlow
+# 🥑 MealFlow (밀플로우)
 
-> **프리미엄 주간 식단 플래너 & 실시간 영양 분석 웹 애플리케이션**
+> **복잡한 회원가입 없이 바로 쓰는 나만의 스마트 주간 식단 플래너 & 영양 가이드**
 > 
-> 다운로드 없이 브라우저에서 바로 주간 식단을 수립하고, 목표 식습관에 따른 탄단지 섭취 현황을 트래킹하며, 식단에서 식재료만 자동으로 추출해 장보기 리스트를 관리해 보세요.
+> 나의 신체 스펙에 딱 맞춘 **권장 칼로리(TDEE)**를 계산하고, 목표 식단 테마(다이어트, 키토, 비건 등)에 따라 일일 영양 섭취량(탄단지)을 계획해 보세요. 입력만 하면 시장 볼 식재료를 알아서 모아 합산해 주는 **스마트 장보기 목록**과 **냉장고 부착용 식단표 인쇄 기능**까지 모두 무료로 제공됩니다.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.1.0-emerald?style=for-the-badge" alt="Version">
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/Platform-Web%20%2F%20SPA-cyan?style=for-the-badge" alt="Platform">
-  <img src="https://img.shields.io/badge/Build-GitHub%20Actions-darkgreen?style=for-the-badge" alt="Build">
+  <img src="https://img.shields.io/badge/버전-1.1.0-emerald?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/사용_환경-웹_브라우저-cyan?style=for-the-badge" alt="Platform">
+  <img src="https://img.shields.io/badge/라이선스-MIT-blue?style=for-the-badge" alt="License">
 </p>
 
 ---
 
-## 🔗 Live Demo
-👉 **[MealFlow 라이브 사이트 바로가기 (Click)](https://hounga13.github.io/MealFlow/)**
+## 🔗 지금 바로 시작하기 (무료)
+👉 **[MealFlow 웹 서비스 접속하기 (Click)](https://hounga13.github.io/MealFlow/)**
 
-*(※ 최초 배포 시 GitHub Repository Settings -> Pages에서 Source를 'GitHub Actions'로 선택해야 라이브 링크가 정상 동작합니다.)*
-
----
-
-## ✨ 핵심 기능 (Key Features)
-
-### 1. 5대 식습관 테마별 목표 영양소 자동 계산
-- **일반 균형식** (탄50% : 단20% : 지30%)
-- **다이어트** (탄40% : 단40% : 지20%)
-- **고단백 벌크업** (탄55% : 단25% : 지20%)
-- **키토제닉 (저탄고지)** (탄5% : 단25% : 지70%)
-- **식물성 비건** (탄60% : 단20% : 지20%)
-- 목표 칼로리 변경 시 권장 영양소(g) 자동 계산 및 주간 평균 섭취량 대비 프로그레스 바 제공.
-
-### 2. 스마트 식재료 합산 쇼핑 리스트
-- 요일별 식단에 적힌 식재료 텍스트(예: `닭가슴살 120g`, `닭가슴살 150g`, `계란 2개`)를 자동으로 파싱.
-- 단위를 판별하여 동일 재료를 하나의 합계(`닭가슴살 270g`, `계란 2개`)로 자동 병합하여 장보기 리스트 제공.
-
-### 3. 무손실 로컬 백업 & 복원 (Data Portability)
-- 브라우저 쿠키나 로컬 저장소 유실에 대비해 현재 세팅을 한 번에 JSON 파일로 다운로드 백업 가능.
-- 백업 파일을 로드해 무결성 검증을 거친 뒤 원클릭 복원 지원.
-
-### 4. A4 캘린더 규격 식단표 인쇄
-- 냉장고나 식탁에 붙여놓고 볼 수 있도록 프린트 전용 CSS 스타일 적용.
-- 불필요한 사이드바와 설정 요소를 생략하고 깔끔한 7일 식단 카드 캘린더만 A4 규격에 맞추어 출력.
+*※ 별도의 앱 설치나 회원가입이 필요 없으며, 기입하신 모든 식단 정보는 개인 브라우저에 안전하게 보관됩니다.*
 
 ---
 
-## 🛠️ 기술 스택 (Tech Stack)
+## ✨ MealFlow 핵심 가치 & 기능 소개
 
-<p align="left">
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/>
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white"/>
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black"/>
-  <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white"/>
-</p>
+### 1. 📏 개인 맞춤형 권장 칼로리 계산기 (TDEE)
+* 더 이상 대략적인 2000 kcal 기준에 나를 맞추지 마세요!
+* **성별, 나이, 키, 몸무게, 평소 활동량, 체중 조절 목표**만 입력하면 내 신체 스펙에 꼭 맞는 **하루 권장 섭취 칼로리**를 정밀하게 계산해 적용해 드립니다.
+* 계산 결과에 따라 탄수화물, 단백질, 지방 목표 섭취량(g)이 실시간으로 자동 재배분됩니다.
 
-- **Core**: Vanilla HTML5, JavaScript (ES6+), Vanilla CSS (Glassmorphism Concept)
-- **Icons**: Lucide Icons CDN
-- **Typography**: Google Fonts (Outfit, Inter)
+### 2. 🥗 5대 식단 테마 템플릿 제공
+내가 추구하는 식습관 방향에 맞춰 식단 가이드를 원클릭으로 선택하세요.
+* **일반 균형식** (탄수화물 50% : 단백질 20% : 지방 30% 비율)
+* **다이어트** (탄수화물 40% : 단백질 40% : 지방 20% 비율 - 체지방 감량 타겟)
+* **고단백 벌크업** (탄수화물 55% : 단백질 25% : 지방 20% 비율 - 근육 합성 타겟)
+* **키토제닉** (탄수화물 5% : 단백질 25% : 지방 70% 비율 - 저탄고지 건강식)
+* **식물성 비건** (탄수화물 60% : 단백질 20% : 지방 20% 비율 - 자연 식물식)
+
+### 3. 📅 요일별 미니 달성률 게이지 바 (Daily Calorie Tracker)
+* 월요일부터 일요일까지의 누적 식단 데이터를 바탕으로, 각 요일별 권장 칼로리 대비 달성률(%)을 **미세 게이지 바**로 시각화해 줍니다.
+* 섭취량 범위에 따라 **초록색(적정)**, **주황색(부족)**, **빨간색(과다/초과)** 색상으로 자동 전환되므로 오늘 하루 과식했는지 부족했는지 직관적으로 즉시 알 수 있습니다.
+
+### 4. 🛒 자동으로 합치고 걸러주는 스마트 장보기 리스트
+* 요일별 식단에 적힌 식재료 텍스트(예: `닭가슴살 100g`, `현미밥 150g` 등)를 식단표가 알아서 파싱합니다.
+* 똑같은 재료는 단위를 판별해 알아서 합산해 줍니다. (예: 월요일 닭가슴살 120g + 수요일 닭가슴살 150g = **장보기 리스트에 '닭가슴살 270g'으로 자동 표기**)
+* **'살 것(구매 대기)'**, **'산 것(구매 완료)'** 탭 필터를 적용해 마트에서 카트를 밀며 편리하게 스마트폰으로 체크할 수 있습니다.
+
+### 5. 🖨️ 냉장고 부착용 식단표 A4 규격 인쇄
+* 주간 계획을 마쳤다면 냉장고나 식탁에 예쁘게 붙여두세요!
+* 화면상의 사이드바나 설정 메뉴들은 깔끔하게 가려지고, 감성적인 **7일 주간 식단표 카드 레이아웃만** A4 종이 한 장에 맞춰 가로로 예쁘게 출력됩니다.
 
 ---
 
-## 🚀 로컬 실행 방법 (How to Run)
+## 💡 MealFlow 3분 사용 가이드
+
+1. **[1단계] 나의 목표 칼로리 계산하기**
+   * 화면 좌측 상단 '목표 설정' 영역의 `권장 칼로리 계산` 버튼을 클릭합니다.
+   * 나의 성별, 연령, 키, 몸무게, 일주일간 운동 빈도 및 조절 목표를 설정하고 적용을 누르면 최적의 탄단지 권장 섭취량 가이드라인이 생성됩니다.
+2. **[2단계] 요일별 식단 기록하기**
+   * 식단표의 각 요일(월~일) 카드에서 추가하고 싶은 시간대(아침, 점심, 저녁, 간식)의 `식사 추가` 버튼을 클릭합니다.
+   * 요리명과 대략적인 칼로리, 탄단지 정보(모르는 경우 생략 가능) 및 재료명 분량(예: 양파 0.5개, 계란 2개)을 기재합니다.
+3. **[3단계] 레시피북 활용하기**
+   * 검증된 식단을 참고하고 싶다면 우측의 '레시피북' 메뉴에서 테마별 추천 요리를 확인하고 `식단표 추가` 버튼을 눌러 원하는 요일에 그대로 복사해 넣으세요.
+4. **[4단계] 장보러 가기**
+   * 식단을 구성하면 자동으로 추출된 '장보기 리스트'가 생성됩니다. 마트에 가서 구입한 물품을 클릭해 체크하며 장보기를 마칩니다.
+5. **[5단계] 인쇄 및 데이터 안전 백업**
+   * 주간 계획을 실물 종이로 뽑으려면 `식단표 인쇄` 버튼을 누릅니다.
+   * 브라우저 캐시 삭제 등에 대비해 내 식단 데이터를 저장해두고 싶다면 `데이터 백업` 버튼을 눌러 JSON 백업 파일을 컴퓨터나 휴대폰에 안전하게 소장할 수 있습니다.
+
+---
+
+## 🛠️ 개발자 및 기여자를 위한 참고 사항 (Technical Details)
+
+<details>
+<summary>⚙️ 기술 스택 & 로컬 실행 방법 접기/펼치기</summary>
+
+### 기술 스택 (Tech Stack)
+* **Core**: Vanilla HTML5, JavaScript (ES6+), Vanilla CSS (Glassmorphism Concept UI)
+* **Icons**: Lucide Icons CDN
+* **Typography**: Google Fonts (Outfit, Inter)
+* **Deploy**: GitHub Actions & GitHub Pages
+
+### 로컬 실행 방법 (How to Run)
+로컬 PC 환경에서 수정을 시도하거나 개발 서버를 띄우려면 아래 명령어를 사용하세요.
 
 ```bash
-# 1. 저장소 클론
+# 1. 레포지토리 클론
 git clone https://github.com/hounga13/MealFlow.git
 cd MealFlow
 
-# 2. 로컬 개발 서버 구동 (포트 3000)
+# 2. 필요한 개발 의존성 설치 및 로컬 서버 구동 (기본 포트 3000)
 npm install
 npm start
 ```
-브라우저에서 `http://localhost:3000`으로 접속합니다. (Node.js 미설치 시 `python3 -m http.server 3000`으로 구동 가능)
+웹 브라우저를 열고 `http://localhost:3000`에 접속합니다.
 
----
-
-## 🚢 배포 및 인프라 운영 (CI/CD)
-
-본 프로젝트는 `.github/workflows/deploy.yml` 파일이 기본 탑재되어 있어, GitHub 레포지토리에 푸시되는 즉시 GitHub Actions를 통해 무료 호스팅 배포가 자동 수행됩니다.
+</details>
