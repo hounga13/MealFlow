@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MealFlow | 프리미엄 주간 식단 플래너 & 영양 분석기</title>
+  <meta name="description" content="MealFlow와 함께 당신의 목표에 맞는 주간 식단을 짜고, 탄단지 영양 균형을 실시간으로 분석해 보세요. 다양한 식습관 유형(일반식, 다이어트, 벌크업, 비건, 키토) 맞춤 레시피와 자동 쇼핑 리스트까지 지원합니다.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="leaf"></i>
+        </div>
+        <span class="logo-text font-outfit">MealFlow</span>
+      </div>
+      
+      <nav class="nav-menu">
+        <button class="nav-btn active" id="btn-tab-dashboard" data-tab="tab-dashboard">
+          <i data-lucide="calendar"></i>
+          <span>식단 플래너</span>
+        </button>
+        <button class="nav-btn" id="btn-tab-recipes" data-tab="tab-recipes">
+          <i data-lucide="book-open"></i>
+          <span>레시피북</span>
+        </button>
+        <button class="nav-btn" id="btn-tab-shopping" data-tab="tab-shopping">
+          <i data-lucide="shopping-bag"></i>
+          <span>쇼핑 리스트</span>
+          <span class="badge" id="shopping-badge">0</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="footer-buttons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <button class="action-btn-outline" id="btn-export-data" title="백업 파일 다운로드" style="width: 100%; padding: 0.5rem 0.75rem;">
+            <i data-lucide="download"></i>
+            <span>백업</span>
+          </button>
+          <button class="action-btn-outline" id="btn-import-data" title="백업 파일 복원" style="width: 100%; padding: 0.5rem 0.75rem;">
+            <i data-lucide="upload"></i>
+            <span>복원</span>
+          </button>
+        </div>
+        <input type="file" id="import-file-input" accept=".json" style="display: none;">
+        <button class="action-btn-outline" id="btn-reset-data" style="width: 100%; padding: 0.5rem 0.75rem; justify-content: center;">
+          <i data-lucide="refresh-cw"></i>
+          <span>전체 초기화</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top header bar -->
+      <header class="top-header">
+        <h1 id="page-title">주간 식단 플래너</h1>
+        <div class="header-actions">
+          <button class="action-btn" id="btn-print-meals">
+            <i data-lucide="printer"></i>
+            <span>식단표 인쇄</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD (Meal Planner) -->
+      <section class="tab-content active" id="tab-dashboard">
+        <!-- Target Settings & Daily Nutrient Progress -->
+        <div class="summary-section">
+          <div class="target-card card">
+            <div class="card-header">
+              <h2><i data-lucide="sliders"></i> 목표 설정</h2>
+            </div>
+            <div class="target-inputs">
+              <div class="input-group">
+                <label for="target-calories">목표 칼로리 (kcal)</label>
+                <input type="number" id="target-calories" value="2000" min="1000" max="10000">
+              </div>
+              <div class="input-group">
+                <label for="diet-type-selector">식단 모드</label>
+                <select id="diet-type-selector">
+                  <option value="balanced">일반 균형식 (탄50:단20:지30)</option>
+                  <option value="diet">다이어트 (탄40:단40:지20)</option>
+                  <option value="bulk">고단백 벌크업 (탄55:단25:지20)</option>
+                  <option value="keto">키토제닉 (탄5:단25:지70)</option>
+                  <option value="vegan">식물성 비건 (탄60:단20:지20)</option>
+                </select>
+              </div>
+            </div>
+            <div class="target-macro-targets">
+              <span class="macro-target-badge font-outfit">탄수화물: <strong id="target-carbs-val">250</strong>g</span>
+              <span class="macro-target-badge font-outfit">단백질: <strong id="target-protein-val">100</strong>g</span>
+              <span class="macro-target-badge font-outfit">지방: <strong id="target-fat-val">67</strong>g</span>
+            </div>
+          </div>
+
+          <div class="progress-card card">
+            <div class="card-header">
+              <h2><i data-lucide="activity"></i> 주간 누적 영양 현황</h2>
+            </div>
+            <div class="progress-grid">
+              <div class="progress-item">
+                <div class="progress-info">
+                  <span>칼로리 (평균/목표)</span>
+                  <span class="font-outfit"><strong id="current-calories">0</strong> / <strong id="limit-calories">2000</strong> kcal</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar" id="bar-calories" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-info">
+                  <span>탄수화물</span>
+                  <span class="font-outfit"><strong id="current-carbs">0</strong> / <strong id="limit-carbs">250</strong> g</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar carbs-color" id="bar-carbs" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-info">
+                  <span>단백질</span>
+                  <span class="font-outfit"><strong id="current-protein">0</strong> / <strong id="limit-protein">100</strong> g</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar protein-color" id="bar-protein" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-info">
+                  <span>지방</span>
+                  <span class="font-outfit"><strong id="current-fat">0</strong> / <strong id="limit-fat">67</strong> g</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar fat-color" id="bar-fat" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Planner Board -->
+        <div class="planner-board">
+          <!-- Monday -->
+          <div class="day-column card" data-day="mon">
+            <div class="day-header">
+              <h3>월요일</h3>
+              <button class="add-meal-btn" data-day="mon" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-mon"></div>
+            <div class="day-summary" id="summary-mon">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+          <!-- Tuesday -->
+          <div class="day-column card" data-day="tue">
+            <div class="day-header">
+              <h3>화요일</h3>
+              <button class="add-meal-btn" data-day="tue" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-tue"></div>
+            <div class="day-summary" id="summary-tue">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+          <!-- Wednesday -->
+          <div class="day-column card" data-day="wed">
+            <div class="day-header">
+              <h3>수요일</h3>
+              <button class="add-meal-btn" data-day="wed" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-wed"></div>
+            <div class="day-summary" id="summary-wed">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+          <!-- Thursday -->
+          <div class="day-column card" data-day="thu">
+            <div class="day-header">
+              <h3>목요일</h3>
+              <button class="add-meal-btn" data-day="thu" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-thu"></div>
+            <div class="day-summary" id="summary-thu">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+          <!-- Friday -->
+          <div class="day-column card" data-day="fri">
+            <div class="day-header">
+              <h3>금요일</h3>
+              <button class="add-meal-btn" data-day="fri" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-fri"></div>
+            <div class="day-summary" id="summary-fri">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+          <!-- Saturday -->
+          <div class="day-column card" data-day="sat">
+            <div class="day-header">
+              <h3>토요일</h3>
+              <button class="add-meal-btn" data-day="sat" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-sat"></div>
+            <div class="day-summary" id="summary-sat">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+          <!-- Sunday -->
+          <div class="day-column card" data-day="sun">
+            <div class="day-header">
+              <h3>일요일</h3>
+              <button class="add-meal-btn" data-day="sun" title="식사 추가"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="day-meals-list" id="meals-sun"></div>
+            <div class="day-summary" id="summary-sun">0 kcal | 탄 0g 단 0g 지 0g</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: RECIPES (Recipe Book) -->
+      <section class="tab-content" id="tab-recipes">
+        <!-- Recipe Search and Filter -->
+        <div class="recipe-filter-bar card">
+          <div class="search-input-wrapper">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="recipe-search" placeholder="추천 레시피 검색 (예: 닭가슴살, 샐러드)...">
+          </div>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-type="all">전체</button>
+            <button class="filter-btn" data-type="balanced">일반식</button>
+            <button class="filter-btn" data-type="diet">다이어트</button>
+            <button class="filter-btn" data-type="bulk">벌크업</button>
+            <button class="filter-btn" data-type="keto">키토제닉</button>
+            <button class="filter-btn" data-type="vegan">비건</button>
+          </div>
+          <button class="action-btn-primary" id="btn-create-recipe">
+            <i data-lucide="plus-circle"></i>
+            <span>내 레시피 추가</span>
+          </button>
+        </div>
+
+        <!-- Recipe List -->
+        <div class="recipe-grid" id="recipe-container"></div>
+      </section>
+
+      <!-- TAB 3: SHOPPING LIST -->
+      <section class="tab-content" id="tab-shopping">
+        <div class="shopping-layout">
+          <!-- Left: Shopping List Controller & Auto Ingredients -->
+          <div class="shopping-main card">
+            <div class="card-header">
+              <h2><i data-lucide="shopping-cart"></i> 식단 기반 식재료 자동 쇼핑 목록</h2>
+              <button class="action-btn-outline" id="btn-clear-completed-shopping">
+                <i data-lucide="check-square"></i>
+                <span>완료된 항목 삭제</span>
+              </button>
+            </div>
+            <p class="section-desc">식단 플래너에 등록한 식사의 '식재료' 정보에서 중복을 제거하고 자동으로 장보기 목록을 만들어줍니다.</p>
+            <ul class="shopping-list" id="auto-shopping-list"></ul>
+          </div>
+
+          <!-- Right: Custom Shopping Item Add -->
+          <div class="shopping-aside card">
+            <div class="card-header">
+              <h2><i data-lucide="list-plus"></i> 수동 추가</h2>
+            </div>
+            <form id="add-shopping-form">
+              <div class="input-group">
+                <label for="shopping-item-name">아이템 명</label>
+                <input type="text" id="shopping-item-name" placeholder="예: 우유, 화장지" required>
+              </div>
+              <button type="submit" class="action-btn-primary full-width">
+                <i data-lucide="plus"></i>
+                <span>목록에 추가</span>
+              </button>
+            </form>
+            <hr class="divider">
+            <div class="custom-shopping-area">
+              <h3>수동 추가한 항목</h3>
+              <ul class="shopping-list" id="custom-shopping-list"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: MEAL DIALOG (ADD & EDIT) -->
+  <dialog class="modal-dialog" id="meal-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">식사 추가</h3>
+        <button class="modal-close" id="btn-close-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="meal-form" method="dialog">
+        <input type="hidden" id="meal-id">
+        <input type="hidden" id="meal-day">
+        
+        <div class="input-group">
+          <label for="meal-name">식사 이름 <span class="required">*</span></label>
+          <input type="text" id="meal-name" placeholder="예: 닭가슴살 샐러드" required>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="meal-time">식사 시간</label>
+            <select id="meal-time">
+              <option value="breakfast">아침</option>
+              <option value="lunch">점심</option>
+              <option value="dinner">저녁</option>
+              <option value="snack">간식</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="meal-calories">칼로리 (kcal)</label>
+            <input type="number" id="meal-calories" min="0" value="0" required>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="meal-carbs">탄수화물 (g)</label>
+            <input type="number" id="meal-carbs" min="0" value="0">
+          </div>
+          <div class="input-group">
+            <label for="meal-protein">단백질 (g)</label>
+            <input type="number" id="meal-protein" min="0" value="0">
+          </div>
+          <div class="input-group">
+            <label for="meal-fat">지방 (g)</label>
+            <input type="number" id="meal-fat" min="0" value="0">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="meal-ingredients">식재료 (쉼표로 구분)</label>
+          <textarea id="meal-ingredients" rows="3" placeholder="예: 닭가슴살 100g, 양상추 50g, 오리엔탈 드레싱"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="action-btn-outline" id="btn-delete-meal" style="display: none;">
+            <i data-lucide="trash-2"></i>
+            <span>삭제</span>
+          </button>
+          <button type="submit" class="action-btn-primary" id="btn-save-meal">
+            <i data-lucide="check"></i>
+            <span>저장</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- MODAL: RECIPE CREATE DIALOG -->
+  <dialog class="modal-dialog" id="recipe-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>나만의 레시피 추가</h3>
+        <button class="modal-close" id="btn-close-recipe-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="recipe-form" method="dialog">
+        <div class="input-group">
+          <label for="recipe-name">레시피 이름 <span class="required">*</span></label>
+          <input type="text" id="recipe-name" placeholder="예: 연어 아보카도 포케" required>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="recipe-type">식단 유형</label>
+            <select id="recipe-type">
+              <option value="balanced">일반 균형식</option>
+              <option value="diet">다이어트</option>
+              <option value="bulk">고단백 벌크업</option>
+              <option value="keto">키토제닉</option>
+              <option value="vegan">식물성 비건</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="recipe-calories">칼로리 (kcal)</label>
+            <input type="number" id="recipe-calories" min="0" value="0" required>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="recipe-carbs">탄수화물 (g)</label>
+            <input type="number" id="recipe-carbs" min="0" value="0">
+          </div>
+          <div class="input-group">
+            <label for="recipe-protein">단백질 (g)</label>
+            <input type="number" id="recipe-protein" min="0" value="0">
+          </div>
+          <div class="input-group">
+            <label for="recipe-fat">지방 (g)</label>
+            <input type="number" id="recipe-fat" min="0" value="0">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="recipe-ingredients">식재료 (쉼표로 구분)</label>
+          <textarea id="recipe-ingredients" rows="3" placeholder="예: 생연어 120g, 아보카도 반개, 현미밥 130g, 간장 드레싱"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="action-btn-primary">
+            <i data-lucide="check"></i>
+            <span>레시피 추가</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- JS -->
+  <script src="app.js"></script>
+</body>
+</html>
