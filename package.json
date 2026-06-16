@@ -17,6 +17,7 @@
   "author": "Antigravity AI",
   "license": "MIT",
   "devDependencies": {
+    "puppeteer": "^25.1.0",
     "serve": "^14.2.4"
   }
 }

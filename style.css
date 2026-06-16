@@ -978,6 +978,94 @@ button, input, select, textarea {
   }
 }
 
+/* Shopping filter btn active state */
+.shopping-filter-btn.active {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+}
+
+/* Day Calorie Mini Progress Bar */
+.day-calorie-progress-wrapper {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.day-calorie-bar-bg {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+.day-calorie-bar {
+  height: 100%;
+  background: var(--color-calories);
+  border-radius: 99px;
+  width: 0%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+.day-calorie-bar.normal { background: var(--color-primary); }
+.day-calorie-bar.warning { background: var(--color-calories); }
+.day-calorie-bar.danger { background: var(--color-danger); }
+
+/* Toast Notification Styles */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 9999;
+  max-width: 350px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: toastSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.toast.hide {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.toast-success .toast-icon { color: var(--color-primary); }
+.toast-info .toast-icon { color: var(--color-accent); }
+.toast-warning .toast-icon { color: var(--color-calories); }
+.toast-danger .toast-icon { color: var(--color-danger); }
+
+.toast-message {
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@keyframes toastSlideIn {
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* ==========================================================================
    Print Stylesheet
    ========================================================================== */

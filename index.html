@@ -253,10 +253,17 @@
           <div class="shopping-main card">
             <div class="card-header">
               <h2><i data-lucide="shopping-cart"></i> 식단 기반 식재료 자동 쇼핑 목록</h2>
-              <button class="action-btn-outline" id="btn-clear-completed-shopping">
-                <i data-lucide="check-square"></i>
-                <span>완료된 항목 삭제</span>
-              </button>
+              <div class="shopping-header-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+                <div class="shopping-filter-buttons" style="display: flex; gap: 0.25rem; background: rgba(15, 23, 42, 0.4); padding: 0.25rem; border-radius: var(--radius-sm); border: 1px solid var(--panel-border);">
+                  <button class="shopping-filter-btn active" data-filter="all" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 4px; cursor: pointer; transition: var(--transition-smooth); font-weight: 500;">전체</button>
+                  <button class="shopping-filter-btn" data-filter="pending" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 4px; cursor: pointer; transition: var(--transition-smooth); font-weight: 500; color: var(--text-secondary);">살 것</button>
+                  <button class="shopping-filter-btn" data-filter="completed" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 4px; cursor: pointer; transition: var(--transition-smooth); font-weight: 500; color: var(--text-secondary);">산 것</button>
+                </div>
+                <button class="action-btn-outline" id="btn-clear-completed-shopping">
+                  <i data-lucide="check-square"></i>
+                  <span>완료 삭제</span>
+                </button>
+              </div>
             </div>
             <p class="section-desc">식단 플래너에 등록한 식사의 '식재료' 정보에서 중복을 제거하고 자동으로 장보기 목록을 만들어줍니다.</p>
             <ul class="shopping-list" id="auto-shopping-list"></ul>
@@ -413,6 +420,9 @@
       </form>
     </div>
   </dialog>
+  
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
 
   <!-- JS -->
   <script src="app.js"></script>

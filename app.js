@@ -181,7 +181,8 @@ let state = {
   },
   customRecipes: [],
   customShoppingItems: [],
-  checkedShoppingItems: [] // list of item names that are completed
+  checkedShoppingItems: [], // list of item names that are completed
+  shoppingFilter: 'all' // all, pending, completed
 };
 
 // --- Initialization & Diagnostic Logging ---
@@ -219,6 +220,7 @@ function loadFromLocalStorage() {
       state.customRecipes = parsed.customRecipes || [];
       state.customShoppingItems = parsed.customShoppingItems || [];
       state.checkedShoppingItems = parsed.checkedShoppingItems || [];
+      state.shoppingFilter = parsed.shoppingFilter || 'all';
       console.log('[MealFlow Storage] State loaded successfully.');
     } else {
       console.log('[MealFlow Storage] No saved state found. Using default blank state.');
@@ -249,6 +251,7 @@ function injectInitialMockData() {
     ];
     
     state.customShoppingItems = ['요거트 1팩', '프로틴 쉐이크'];
+    state.shoppingFilter = 'all';
     saveToLocalStorage();
   } catch (e) {
     console.error('[MealFlow Mock] Injecting mock data failed:', e);
@@ -389,7 +392,28 @@ function renderPlanner() {
     });
 
     if (summaryEl) {
-      summaryEl.textContent = `${dayCal} kcal | 탄 ${dayCarbs}g 단 ${dayProtein}g 지 ${dayFat}g`;
+      summaryEl.innerHTML = '';
+      
+      const textSpan = document.createElement('span');
+      textSpan.textContent = `${dayCal} kcal | 탄 ${dayCarbs}g 단 ${dayProtein}g 지 ${dayFat}g`;
+      summaryEl.appendChild(textSpan);
+
+      const pct = Math.min((dayCal / state.targetCalories) * 100, 100);
+      let colorClass = 'warning';
+      if (dayCal > state.targetCalories) {
+        colorClass = 'danger';
+      } else if (pct >= 70) {
+        colorClass = 'normal';
+      }
+
+      const barWrapper = document.createElement('div');
+      barWrapper.className = 'day-calorie-progress-wrapper';
+      barWrapper.innerHTML = `
+        <div class="day-calorie-bar-bg" title="목표량 대비 ${Math.round((dayCal / state.targetCalories) * 100)}%">
+          <div class="day-calorie-bar ${colorClass}" style="width: ${pct}%"></div>
+        </div>
+      `;
+      summaryEl.appendChild(barWrapper);
     }
   });
 }
@@ -550,6 +574,7 @@ function renderRecipes() {
       
       // Reset select dropdown index
       selectEl.selectedIndex = 0;
+      showToast(`${recipe.name}이 ${translateDay(selectedDay)} 식단표에 추가되었습니다.`);
       console.log(`[MealFlow Planner] Added ${recipe.name} to ${selectedDay}`);
     });
 
@@ -628,15 +653,26 @@ function renderShoppingLists() {
     };
   });
 
+  // Apply status filters to auto ingredients
+  let filteredAuto = autoIngredients;
+  if (state.shoppingFilter === 'pending') {
+    filteredAuto = autoIngredients.filter(item => !state.checkedShoppingItems.includes(item.clean));
+  } else if (state.shoppingFilter === 'completed') {
+    filteredAuto = autoIngredients.filter(item => state.checkedShoppingItems.includes(item.clean));
+  }
+
   // Render auto items
-  if (autoIngredients.length === 0) {
+  if (filteredAuto.length === 0) {
+    let emptyMsg = '플래너에 식재료가 등록된 식사를 추가하면 자동으로 쇼핑 목록이 채워집니다.';
+    if (state.shoppingFilter === 'pending') emptyMsg = '살 품목이 없습니다! 장보기가 완료되었습니다. 🎉';
+    if (state.shoppingFilter === 'completed') emptyMsg = '완료(구매) 처리된 품목이 없습니다.';
     autoContainer.innerHTML = `
-      <li style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">
-        플래너에 식재료가 등록된 식사를 추가하면 자동으로 쇼핑 목록이 채워집니다.
+      <li style="color: var(--text-muted); text-align: center; padding: 1.5rem 0; font-size: 0.9rem;">
+        ${emptyMsg}
       </li>
     `;
   } else {
-    autoIngredients.forEach((item, index) => {
+    filteredAuto.forEach((item, index) => {
       const li = document.createElement('li');
       li.className = 'shopping-item';
       
@@ -660,25 +696,41 @@ function renderShoppingLists() {
         }
         saveToLocalStorage();
         updateShoppingBadge();
+        // Dynamic re-render if filter is active
+        if (state.shoppingFilter !== 'all') {
+          setTimeout(() => renderShoppingLists(), 200);
+        }
       });
 
       autoContainer.appendChild(li);
     });
   }
 
+  // Apply status filters to custom items
+  const customItemsMapped = state.customShoppingItems.map((item, index) => ({ item, originalIndex: index }));
+  let filteredCustom = customItemsMapped;
+  if (state.shoppingFilter === 'pending') {
+    filteredCustom = customItemsMapped.filter(x => !state.checkedShoppingItems.includes(`custom-${x.item}`));
+  } else if (state.shoppingFilter === 'completed') {
+    filteredCustom = customItemsMapped.filter(x => state.checkedShoppingItems.includes(`custom-${x.item}`));
+  }
+
   // --- Step 4b: Render Custom Shopping Items ---
-  if (state.customShoppingItems.length === 0) {
+  if (filteredCustom.length === 0) {
+    let emptyMsg = '추가된 커스텀 아이템이 없습니다.';
+    if (state.shoppingFilter === 'pending') emptyMsg = '살 커스텀 아이템이 없습니다.';
+    if (state.shoppingFilter === 'completed') emptyMsg = '구매 완료된 커스텀 아이템이 없습니다.';
     customContainer.innerHTML = `
       <li style="color: var(--text-muted); text-align: center; padding: 1rem 0; font-size: 0.85rem;">
-        추가된 커스텀 아이템이 없습니다.
+        ${emptyMsg}
       </li>
     `;
   } else {
-    state.customShoppingItems.forEach((item, index) => {
+    filteredCustom.forEach(({ item, originalIndex }) => {
       const li = document.createElement('li');
       li.className = 'shopping-item';
       
-      const uniqueId = `custom-chk-${index}`;
+      const uniqueId = `custom-chk-${originalIndex}`;
       const isChecked = state.checkedShoppingItems.includes(`custom-${item}`);
 
       li.innerHTML = `
@@ -700,13 +752,16 @@ function renderShoppingLists() {
         }
         saveToLocalStorage();
         updateShoppingBadge();
+        // Dynamic re-render if filter is active
+        if (state.shoppingFilter !== 'all') {
+          setTimeout(() => renderShoppingLists(), 200);
+        }
       });
 
       // Delete button
       const delBtn = li.querySelector('.delete-item-btn');
       delBtn.addEventListener('click', () => {
-        state.customShoppingItems.splice(index, 1);
-        // Clean up from checked items
+        state.customShoppingItems.splice(originalIndex, 1);
         state.checkedShoppingItems = state.checkedShoppingItems.filter(x => x !== `custom-${item}`);
         saveToLocalStorage();
         renderShoppingLists();
@@ -776,6 +831,7 @@ function setupEventListeners() {
       saveToLocalStorage();
       renderNutritionProgress();
       calculateTargetMacros();
+      showToast('목표 칼로리 및 권장 영양소가 변경되었습니다.', 'info');
     });
   }
 
@@ -786,6 +842,7 @@ function setupEventListeners() {
       saveToLocalStorage();
       renderNutritionProgress();
       calculateTargetMacros();
+      showToast('식단 모드가 갱신되었습니다.', 'info');
     });
   }
 
@@ -838,6 +895,7 @@ function setupEventListeners() {
 
       saveToLocalStorage();
       renderAll();
+      showToast('식사 계획이 저장되었습니다.');
       mealModal.close();
     });
   }
@@ -852,6 +910,7 @@ function setupEventListeners() {
         state.meals[day] = state.meals[day].filter(m => m.id !== mealId);
         saveToLocalStorage();
         renderAll();
+        showToast('식사 계획이 삭제되었습니다.', 'danger');
         mealModal.close();
       }
     });
@@ -886,6 +945,7 @@ function setupEventListeners() {
       state.customRecipes.push(newRecipe);
       saveToLocalStorage();
       renderRecipes();
+      showToast(`'${newRecipe.name}' 레시피를 보관함에 추가했습니다.`);
       recipeModal.close();
       recipeForm.reset();
     });
@@ -919,6 +979,7 @@ function setupEventListeners() {
         state.customShoppingItems.push(val);
         saveToLocalStorage();
         renderShoppingLists();
+        showToast(`'${val}'을 장보기 리스트에 추가했습니다.`);
         input.value = '';
       }
     });
@@ -927,35 +988,26 @@ function setupEventListeners() {
   const btnClearCompleted = document.getElementById('btn-clear-completed-shopping');
   if (btnClearCompleted) {
     btnClearCompleted.addEventListener('click', () => {
-      // Clear completed auto items from checkedShoppingItems list
-      // Custom items: remove them entirely from customShoppingItems if checked
       const checkedCustom = [];
-      
       state.customShoppingItems = state.customShoppingItems.filter(item => {
         const itemKey = `custom-${item}`;
         if (state.checkedShoppingItems.includes(itemKey)) {
           checkedCustom.push(itemKey);
-          return false; // exclude
+          return false;
         }
-        return true; // keep
+        return true;
       });
 
-      // Filter checkedShoppingItems to retain only unchecked auto elements
-      // Remove any custom item records that were deleted
       state.checkedShoppingItems = state.checkedShoppingItems.filter(key => {
         if (key.startsWith('custom-')) {
           return !checkedCustom.includes(key);
         }
-        
-        // Check if this auto item is still displayed in DOM as checked.
-        // Rather than DOM scanning, we can just clear it.
-        // A simple compromise: reset checked lists for auto items that were checked.
-        // We will scan the checked auto elements and clear their state entries.
         return false; 
       });
 
       saveToLocalStorage();
       renderShoppingLists();
+      showToast('완료된 장보기 품목을 정리했습니다.', 'info');
       console.log('[MealFlow Shopping] Cleaned up completed shopping list items.');
     });
   }
@@ -972,12 +1024,14 @@ function setupEventListeners() {
           meals: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
           customRecipes: [],
           customShoppingItems: [],
-          checkedShoppingItems: []
+          checkedShoppingItems: [],
+          shoppingFilter: 'all'
         };
         injectInitialMockData();
         loadFromLocalStorage();
         calculateTargetMacros();
         renderAll();
+        showToast('모든 데이터가 초기화되었습니다.', 'warning');
         console.log('[MealFlow App] Reset database.');
       }
     });
@@ -987,6 +1041,7 @@ function setupEventListeners() {
   const btnPrint = document.getElementById('btn-print-meals');
   if (btnPrint) {
     btnPrint.addEventListener('click', () => {
+      showToast('식단표 인쇄 창을 엽니다.', 'info');
       window.print();
     });
   }
@@ -1007,10 +1062,11 @@ function setupEventListeners() {
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
+        showToast('식단 백업 파일을 내보냈습니다.');
         console.log('[MealFlow App] Backup file exported successfully.');
       } catch (error) {
         console.error('[MealFlow App] Failed to export backup:', error);
-        alert('백업 파일 내보내기에 실패했습니다.');
+        showToast('백업 파일 내보내기에 실패했습니다.', 'danger');
       }
     });
   }
@@ -1035,6 +1091,7 @@ function setupEventListeners() {
             state.customRecipes = parsed.customRecipes || [];
             state.customShoppingItems = parsed.customShoppingItems || [];
             state.checkedShoppingItems = parsed.checkedShoppingItems || [];
+            state.shoppingFilter = parsed.shoppingFilter || 'all';
 
             saveToLocalStorage();
             calculateTargetMacros();
@@ -1045,20 +1102,42 @@ function setupEventListeners() {
             if (targetCalInput) targetCalInput.value = state.targetCalories;
             if (dietSelector) dietSelector.value = state.dietType;
 
-            alert('식단 데이터를 성공적으로 복원했습니다.');
+            showToast('백업 파일로부터 식단 데이터를 완벽히 복원했습니다!', 'success');
             console.log('[MealFlow App] Backup file imported successfully.');
           } else {
-            alert('올바른 MealFlow 백업 파일이 아닙니다.');
+            showToast('올바른 MealFlow 백업 파일 형식이 아닙니다.', 'danger');
           }
         } catch (err) {
           console.error('[MealFlow App] Failed to parse backup file:', err);
-          alert('파일을 읽는 도중 오류가 발생했습니다.');
+          showToast('파일을 읽는 도중 오류가 발생했습니다.', 'danger');
         }
         importFileInput.value = '';
       };
       reader.readAsText(file);
     });
   }
+
+  // 9. Shopping List Filters
+  const shoppingFilterBtns = document.querySelectorAll('.shopping-filter-btn');
+  shoppingFilterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      shoppingFilterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.style.color = 'var(--text-secondary)';
+      });
+      btn.classList.add('active');
+      btn.style.color = '#fff';
+
+      state.shoppingFilter = btn.dataset.filter;
+      saveToLocalStorage();
+      renderShoppingLists();
+      
+      let filterText = '전체 품목';
+      if (state.shoppingFilter === 'pending') filterText = '구매할 품목';
+      if (state.shoppingFilter === 'completed') filterText = '구매 완료 품목';
+      showToast(`장보기 목록 필터: ${filterText} 보기`, 'info');
+    });
+  });
 }
 
 // Open Dialog modal to add new meals
@@ -1134,4 +1213,39 @@ function escapeHTML(str) {
       '"': '&quot;'
     }[tag] || tag)
   );
+}
+
+// Premium Toast Notification Helper
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  
+  let iconName = 'check-circle';
+  if (type === 'info') iconName = 'info';
+  if (type === 'warning') iconName = 'alert-triangle';
+  if (type === 'danger') iconName = 'alert-octagon';
+
+  toast.innerHTML = `
+    <div class="toast-icon">
+      <i data-lucide="${iconName}"></i>
+    </div>
+    <div class="toast-message">${escapeHTML(message)}</div>
+  `;
+
+  container.appendChild(toast);
+  
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  // Auto remove toast after 3 seconds
+  setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 3000);
 }
