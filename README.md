@@ -8,7 +8,10 @@
   <img src="https://img.shields.io/badge/버전-1.1.0-emerald?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/사용_환경-웹_브라우저-cyan?style=for-the-badge" alt="Platform">
   <img src="https://img.shields.io/badge/라이선스-MIT-blue?style=for-the-badge" alt="License">
+  <a href="https://github.com/hounga13/mind-reader-skill"><img src="https://img.shields.io/badge/Powered_By-Mind_Reader_Skill-purple?style=for-the-badge&logo=github" alt="MindReader"></a>
 </p>
+
+> 💡 **Special Thanks**: 본 프로젝트는 복잡하고 정교한 요구사항을 지능적으로 도출하여 설계에 즉각 반영하는 AI 에이전트 협업 도구, **[mind-reader-skill](https://github.com/hounga13/mind-reader-skill)**의 도움을 받아 UX가 대폭 고도화되었습니다.
 
 ---
 
